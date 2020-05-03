@@ -2,7 +2,7 @@
   "name": "wddx2json",
   "version": "1.0.0",
   "description": "convert wddx to json",
-  "main": "index.js",
+  "main": "target/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

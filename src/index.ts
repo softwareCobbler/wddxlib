@@ -75,7 +75,7 @@ export async function wddxToJSON(wddxString) {
     return recursiveWorker(children(data)[0]);
 }
 
-(async() => {
+/*(async() => {
     const wddxStr = `
     <wddxPacket version='1.0'>
         <header/>
@@ -92,4 +92,4 @@ export async function wddxToJSON(wddxString) {
     </wddxPacket>`;
 
     console.log(await wddxToJSON(wddxStr));
-})();
+})();*/

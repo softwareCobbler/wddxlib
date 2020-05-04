@@ -1,79 +1,27 @@
-import * as xml2js from "xml2js";
+import wddx2pojo from "./wddx2pojo";
+import pojo2wddx from "./pojo2wddx";
 
-function children(xml2jsElement) {
-    return xml2jsElement["$$"];
-}
+export {wddx2pojo, pojo2wddx};
 
-async function parseWDDXString(wddxString) {
-    const parser = new xml2js.Parser({explicitChildren:true, preserveChildrenOrder:true});
-    const wddxPacket = await parser.parseStringPromise(wddxString);
-    return wddxPacket.wddxPacket;
-}
-
-function wddxStringLiteral(wddx) {
-    return wddx["_"].toString();
-}
-
-function wddxNumericLiteral(wddx) {
-    return parseFloat(wddx["_"]);
-}
-
-function wddxBooleanLiteral(wddx) {
-    return wddx["$"].value.toLowerCase === "true";
-}
-
-function recursiveWorker(wddx) {
-    const elementType = wddx["#name"];
-    if (elementType == "array") {
-        return arrayWorker(children(wddx));
-    }
-    else if (elementType == "struct") {
-        return structWorker(children(wddx));
-    }
-    else if (elementType == "string") {
-        return wddxStringLiteral(wddx);
-    }
-    else if (elementType == "number") {
-        return wddxNumericLiteral(wddx);
-    }
-    else if (elementType == "boolean") {
-        return wddxBooleanLiteral(wddx);
-    }
-    else {
-        throw `unhandled wddx type "${elementType}"`;
-    }
-}
-
-function arrayWorker(wddxList) {
-    const result : any[] = [];
-
-    for (let wddx of wddxList) {
-        result.push(recursiveWorker(wddx));
-    }
-
-    return result;
-}
-
-function wddxStructKey(wddxStructKVPair) {
-    return wddxStructKVPair["$"].name;
-}
-
-function structWorker(wddxStruct) {
-    const result = {};
+/*(async() => console.log(await pojo2wddx(
+    [{
+        REMOTE_SESSION: true
+    }]
     
-    for (let wddxStructKVPair of wddxStruct) {
-        const key = wddxStructKey(wddxStructKVPair);
-        result[key] = recursiveWorker(children(wddxStructKVPair)[0]);
-    }
+)))();*/
 
-    return result;
-}
-
-export async function wddxToJSON(wddxString) {
-    const packetContent = await parseWDDXString(wddxString);
-    const data = packetContent.data[0];
-    return recursiveWorker(children(data)[0]);
-}
+/*
+<wddxPacket version='1.0'>
+    <header/>
+    <data>
+        <array length='1'>
+            <struct>
+                <var name='REMOTE_SESSION'><boolean value='true'/></var>
+            </struct>
+        </array>
+    </data>
+</wddxPacket>
+*/
 
 /*(async() => {
     const wddxStr = `
@@ -93,3 +41,4 @@ export async function wddxToJSON(wddxString) {
 
     console.log(await wddxToJSON(wddxStr));
 })();*/
+

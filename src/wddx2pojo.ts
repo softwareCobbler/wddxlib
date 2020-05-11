@@ -63,6 +63,10 @@ function wddxStructKey(wddxStructKVPair) {
 
 function structWorker(wddxStruct) {
     const result = {};
+
+    if (wddxStruct == undefined) { // empty struct, e.g., "<struct></struct>"
+        return result;
+    }
     
     for (let wddxStructKVPair of wddxStruct) {
         const key = wddxStructKey(wddxStructKVPair);

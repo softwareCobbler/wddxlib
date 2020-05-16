@@ -28,7 +28,12 @@ function wddxBooleanLiteral(wddx) {
 function recursiveWorker(wddx) {
     const elementType = wddx["#name"];
     if (elementType == "array") {
-        return arrayWorker(children(wddx));
+        if (wddx["$"].length == 0) {
+            return [];
+        }
+        else {
+            return arrayWorker(children(wddx));
+        }
     }
     else if (elementType == "struct") {
         return structWorker(children(wddx));
